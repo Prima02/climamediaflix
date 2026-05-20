@@ -33,6 +33,7 @@ body{
 }
 
 /* LOGO */
+
 .logo-area{
     text-align:center;
     margin-top:10px;
@@ -45,6 +46,7 @@ body{
 }
 
 /* RELÓGIO */
+
 .clock{
     text-align:center;
     margin-top:40px;
@@ -64,6 +66,7 @@ body{
 }
 
 /* CLIMA */
+
 .weather{
     text-align:center;
 }
@@ -92,6 +95,7 @@ body{
 }
 
 /* RODAPÉ */
+
 .footer{
     text-align:center;
     margin-bottom:120px;
@@ -158,6 +162,7 @@ body{
 <div class="container">
 
     <!-- TOPO -->
+
     <div>
 
         <div class="logo-area">
@@ -167,6 +172,7 @@ body{
         </div>
 
         <!-- RELÓGIO -->
+
         <div class="clock">
 
             <div class="time" id="time">
@@ -182,6 +188,7 @@ body{
     </div>
 
     <!-- CLIMA -->
+
     <div class="weather">
 
         <div class="icon" id="icon">
@@ -203,6 +210,7 @@ body{
     </div>
 
     <!-- RODAPÉ -->
+
     <div class="footer">
 
         <div class="minmax" id="minmax">
@@ -220,6 +228,7 @@ body{
 </div>
 
 <!-- NOTÍCIAS -->
+
 <div class="ticker">
 
     <div class="ticker-text" id="news">
@@ -230,7 +239,8 @@ body{
 
 <script>
 
-// RELÓGIO
+/* RELÓGIO */
+
 function updateClock(){
 
     const now = new Date();
@@ -252,18 +262,18 @@ function updateClock(){
 }
 
 setInterval(updateClock,1000);
+
 updateClock();
 
 
-// CLIMA
+/* CLIMA */
+
 async function getWeather(){
 
     try{
 
         const url =
-        "const url =
-"const url =
-"https://gnews.io/api/v4/top-headlines?lang=pt&country=br&max=10&apikey=36ba09d3e74fcd06fd3bb085f57fde83";
+        "https://api.open-meteo.com/v1/forecast?latitude=-20.3856&longitude=-43.5036&current_weather=true&daily=temperature_2m_max,temperature_2m_min&timezone=America/Sao_Paulo";
 
         const response = await fetch(url);
 
@@ -282,9 +292,11 @@ async function getWeather(){
         Math.round(data.daily.temperature_2m_min[0]);
 
         let icon = "☀️";
+
         let condition = "Ensolarado";
 
         // CÓDIGOS CLIMA
+
         if([1,2].includes(weatherCode)){
             icon = "🌤️";
             condition = "Parcialmente nublado";
@@ -324,6 +336,8 @@ async function getWeather(){
 
     }catch(error){
 
+        console.log(error);
+
         document.getElementById('condition').innerText =
         "Sem conexão";
 
@@ -334,28 +348,40 @@ async function getWeather(){
 getWeather();
 
 // Atualiza clima a cada 10 minutos
+
 setInterval(getWeather,600000);
 
 
-// NOTÍCIAS
+/* NOTÍCIAS */
 
 async function getNews(){
 
     try{
 
         const url =
-        "https://gnews.io/api/v4/search?q=(Minas%20Gerais%20OR%20Ouro%20Preto%20OR%20tecnologia%20OR%20esportes%20OR%20economia)&lang=pt&country=br&max=10&apikey=36ba09d3e74fcd06fd3bb085f57fde83";
+        "https://gnews.io/api/v4/top-headlines?lang=pt&country=br&max=10&apikey=36ba09d3e74fcd06fd3bb085f57fde83";
 
         const response = await fetch(url);
 
         const data = await response.json();
 
+        if(!data.articles || data.articles.length === 0){
+
+            document.getElementById("news")
+            .innerText =
+            "Sem notícias disponíveis";
+
+            return;
+        }
+
         // REMOVE DUPLICADAS
+
         const uniqueTitles = [...new Set(
             data.articles.map(article => article.title)
         )];
 
         // FORMATA TEXTO
+
         const headlines = uniqueTitles
         .slice(0,10)
         .map(title => "📰 " + title)
@@ -365,6 +391,8 @@ async function getNews(){
         .innerText = headlines;
 
     }catch(error){
+
+        console.log(error);
 
         document.getElementById("news")
         .innerText =
@@ -377,6 +405,7 @@ async function getNews(){
 getNews();
 
 // Atualiza notícias a cada 30 minutos
+
 setInterval(getNews,1800000);
 
 </script>
