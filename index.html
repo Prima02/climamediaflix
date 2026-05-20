@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=768,height=1152,initial-scale=1.0"/>
-<title>MediaFlix Clima + Notícias</title>
+<title>MediaFlix Clima</title>
 
 <style>
 
@@ -20,7 +20,6 @@ body{
     overflow:hidden;
     background:#000000;
     color:white;
-    position:relative;
 }
 
 .container{
@@ -32,30 +31,68 @@ body{
     justify-content:space-between;
 }
 
+/* ANIMAÇÃO GERAL */
+
+.fade-in{
+    animation:fadeIn 1.2s ease;
+}
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+        transform:translateY(25px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
 /* LOGO */
 
 .logo-area{
     text-align:center;
     margin-top:10px;
+    animation:pulseLogo 4s ease-in-out infinite;
 }
 
 .logo-img{
-    width:620px;
+    width:500px;
     height:auto;
     object-fit:contain;
+}
+
+@keyframes pulseLogo{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.03);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+
 }
 
 /* RELÓGIO */
 
 .clock{
     text-align:center;
-    margin-top:40px;
+    margin-top:30px;
 }
 
 .time{
     font-size:130px;
     font-weight:bold;
     line-height:1;
+    animation:glow 2s ease-in-out infinite;
 }
 
 .date{
@@ -63,6 +100,22 @@ body{
     opacity:0.85;
     margin-top:16px;
     text-transform:capitalize;
+}
+
+@keyframes glow{
+
+    0%{
+        text-shadow:0 0 10px rgba(255,255,255,0.2);
+    }
+
+    50%{
+        text-shadow:0 0 30px rgba(255,255,255,0.7);
+    }
+
+    100%{
+        text-shadow:0 0 10px rgba(255,255,255,0.2);
+    }
+
 }
 
 /* CLIMA */
@@ -74,12 +127,46 @@ body{
 .icon{
     font-size:180px;
     margin-bottom:25px;
+    animation:float 4s ease-in-out infinite;
+}
+
+@keyframes float{
+
+    0%{
+        transform:translateY(0px);
+    }
+
+    50%{
+        transform:translateY(-15px);
+    }
+
+    100%{
+        transform:translateY(0px);
+    }
+
 }
 
 .temp{
     font-size:200px;
     font-weight:bold;
     line-height:1;
+    animation:fadeTemp 3s ease-in-out infinite;
+}
+
+@keyframes fadeTemp{
+
+    0%{
+        opacity:1;
+    }
+
+    50%{
+        opacity:0.85;
+    }
+
+    100%{
+        opacity:1;
+    }
+
 }
 
 .city{
@@ -98,7 +185,7 @@ body{
 
 .footer{
     text-align:center;
-    margin-bottom:120px;
+    margin-bottom:30px;
 }
 
 .minmax{
@@ -118,38 +205,21 @@ body{
     background:#ff1a1a;
     border-radius:999px;
     margin-top:25px;
+    animation:redGlow 2s linear infinite;
 }
 
-/* NOTÍCIAS */
-
-.ticker{
-    width:100%;
-    overflow:hidden;
-    white-space:nowrap;
-    background:#ff1a1a;
-    padding:24px 0;
-    position:absolute;
-    bottom:0;
-    left:0;
-}
-
-.ticker-text{
-    display:inline-block;
-    padding-left:100%;
-    animation:ticker 45s linear infinite;
-    font-size:34px;
-    font-weight:bold;
-    color:white;
-}
-
-@keyframes ticker{
+@keyframes redGlow{
 
     0%{
-        transform:translateX(0);
+        box-shadow:0 0 5px #ff1a1a;
+    }
+
+    50%{
+        box-shadow:0 0 25px #ff1a1a;
     }
 
     100%{
-        transform:translateX(-100%);
+        box-shadow:0 0 5px #ff1a1a;
     }
 
 }
@@ -159,7 +229,7 @@ body{
 
 <body>
 
-<div class="container">
+<div class="container fade-in">
 
     <!-- TOPO -->
 
@@ -223,16 +293,6 @@ body{
 
         <div class="red-line"></div>
 
-    </div>
-
-</div>
-
-<!-- NOTÍCIAS -->
-
-<div class="ticker">
-
-    <div class="ticker-text" id="news">
-        Carregando notícias...
     </div>
 
 </div>
@@ -350,58 +410,6 @@ getWeather();
 // Atualiza clima a cada 10 minutos
 
 setInterval(getWeather,600000);
-
-
-/* NOTÍCIAS */
-
-async function getNews(){
-
-    try{
-
-        const url =
-        "https://api.rss2json.com/v1/api.json?rss_url=https://news.google.com/rss?hl=pt-BR&gl=BR&ceid=BR:pt-419";
-
-        const response = await fetch(url);
-
-        const data = await response.json();
-
-        if(!data.items || data.items.length === 0){
-            return;
-        }
-
-        // REMOVE DUPLICADAS
-
-        const uniqueTitles = [...new Set(
-            data.items.map(item => item.title)
-        )];
-
-        // FORMATA TEXTO
-
-        const headlines = uniqueTitles
-        .slice(0,10)
-        .map(title => "📰 " + title)
-        .join("   •   ");
-
-        document.getElementById("news")
-        .innerText = headlines;
-
-    }catch(error){
-
-        console.log(error);
-
-        document.getElementById("news")
-        .innerText =
-        "Sem notícias disponíveis";
-
-    }
-
-}
-
-getNews();
-
-// Atualiza notícias a cada 30 minutos
-
-setInterval(getNews,1800000);
 
 </script>
 
