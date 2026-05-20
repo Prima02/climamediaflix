@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=768,height=1152,initial-scale=1.0"/>
-<title>MediaFlix Clima</title>
+<title>MediaFlix Clima + Notícias</title>
 
 <style>
 
@@ -20,6 +20,7 @@ body{
     overflow:hidden;
     background:#000000;
     color:white;
+    position:relative;
 }
 
 .container{
@@ -93,7 +94,7 @@ body{
 /* RODAPÉ */
 .footer{
     text-align:center;
-    margin-bottom:20px;
+    margin-bottom:120px;
 }
 
 .minmax{
@@ -113,6 +114,40 @@ body{
     background:#ff1a1a;
     border-radius:999px;
     margin-top:25px;
+}
+
+/* NOTÍCIAS */
+
+.ticker{
+    width:100%;
+    overflow:hidden;
+    white-space:nowrap;
+    background:#ff1a1a;
+    padding:24px 0;
+    position:absolute;
+    bottom:0;
+    left:0;
+}
+
+.ticker-text{
+    display:inline-block;
+    padding-left:100%;
+    animation:ticker 45s linear infinite;
+    font-size:34px;
+    font-weight:bold;
+    color:white;
+}
+
+@keyframes ticker{
+
+    0%{
+        transform:translateX(0);
+    }
+
+    100%{
+        transform:translateX(-100%);
+    }
+
 }
 
 </style>
@@ -180,6 +215,15 @@ body{
 
         <div class="red-line"></div>
 
+    </div>
+
+</div>
+
+<!-- NOTÍCIAS -->
+<div class="ticker">
+
+    <div class="ticker-text" id="news">
+        Carregando notícias...
     </div>
 
 </div>
@@ -287,8 +331,51 @@ async function getWeather(){
 
 getWeather();
 
-// Atualiza a cada 10 minutos
+// Atualiza clima a cada 10 minutos
 setInterval(getWeather,600000);
+
+
+// NOTÍCIAS
+
+async function getNews(){
+
+    try{
+
+        const url =
+        "https://gnews.io/api/v4/search?q=(Minas%20Gerais%20OR%20Ouro%20Preto%20OR%20tecnologia%20OR%20esportes%20OR%20economia)&lang=pt&country=br&max=10&apikey=36ba09d3e74fcd06fd3bb085f57fde83";
+
+        const response = await fetch(url);
+
+        const data = await response.json();
+
+        // REMOVE DUPLICADAS
+        const uniqueTitles = [...new Set(
+            data.articles.map(article => article.title)
+        )];
+
+        // FORMATA TEXTO
+        const headlines = uniqueTitles
+        .slice(0,10)
+        .map(title => "📰 " + title)
+        .join("   •   ");
+
+        document.getElementById("news")
+        .innerText = headlines;
+
+    }catch(error){
+
+        document.getElementById("news")
+        .innerText =
+        "Sem notícias disponíveis";
+
+    }
+
+}
+
+getNews();
+
+// Atualiza notícias a cada 30 minutos
+setInterval(getNews,1800000);
 
 </script>
 
