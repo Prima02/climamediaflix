@@ -359,13 +359,13 @@ async function getNews(){
     try{
 
         const url =
-        "https://newsapi.org/v2/top-headlines?country=br&pageSize=10&apiKey=8d4dc80f20f642ca830ce4f3af7557ef";
+        "https://api.rss2json.com/v1/api.json?rss_url=https://news.google.com/rss?hl=pt-BR&gl=BR&ceid=BR:pt-419";
 
         const response = await fetch(url);
 
         const data = await response.json();
 
-        if(!data.articles || data.articles.length === 0){
+        if(!data.items || data.items.length === 0){
 
             document.getElementById("news")
             .innerText =
@@ -377,7 +377,7 @@ async function getNews(){
         // REMOVE DUPLICADAS
 
         const uniqueTitles = [...new Set(
-            data.articles.map(article => article.title)
+            data.items.map(item => item.title)
         )];
 
         // FORMATA TEXTO
