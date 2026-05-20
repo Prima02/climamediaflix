@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=768,height=1152,initial-scale=1.0"/>
-<title>MediaFlix Clima</title>
+<title>MediaFlix Outdoor Clima</title>
 
 <style>
 
@@ -22,61 +22,72 @@ body{
     color:white;
 }
 
-.container{
+/* FUNDO */
+
+.background-glow{
+    position:absolute;
     width:100%;
     height:100%;
-    padding:50px;
+    background:
+    radial-gradient(circle at top,
+    rgba(255,0,0,0.12),
+    transparent 45%);
+    animation:bgPulse 6s ease-in-out infinite;
+}
+
+@keyframes bgPulse{
+
+    0%{
+        opacity:0.7;
+    }
+
+    50%{
+        opacity:1;
+    }
+
+    100%{
+        opacity:0.7;
+    }
+
+}
+
+.container{
+    position:relative;
+    z-index:2;
+    width:100%;
+    height:100%;
+    padding:40px;
     display:flex;
     flex-direction:column;
     justify-content:space-between;
-}
-
-/* ANIMAÇÃO GERAL */
-
-.fade-in{
-    animation:fadeIn 1.2s ease;
-}
-
-@keyframes fadeIn{
-
-    from{
-        opacity:0;
-        transform:translateY(25px);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-
+    align-items:center;
 }
 
 /* LOGO */
 
 .logo-area{
-    text-align:center;
-    margin-top:10px;
-    animation:pulseLogo 4s ease-in-out infinite;
+    margin-top:5px;
+    animation:logoFloat 5s ease-in-out infinite;
 }
 
 .logo-img{
-    width:420px;
+    width:340px;
     height:auto;
     object-fit:contain;
 }
 
-@keyframes pulseLogo{
+@keyframes logoFloat{
 
     0%{
-        transform:scale(1);
+        transform:translateY(0px);
     }
 
     50%{
-        transform:scale(1.03);
+        transform:translateY(-6px);
     }
 
     100%{
-        transform:scale(1);
+        transform:translateY(0px);
     }
 
 }
@@ -85,37 +96,41 @@ body{
 
 .clock{
     text-align:center;
-    margin-top:20px;
+    margin-top:10px;
 }
 
 .time{
-    font-size:130px;
-    font-weight:bold;
+    font-size:150px;
+    font-weight:900;
     line-height:1;
-    animation:glow 2s ease-in-out infinite;
+    text-shadow:
+    0 0 10px rgba(255,255,255,0.3),
+    0 0 30px rgba(255,255,255,0.2);
+    animation:clockGlow 3s ease-in-out infinite;
 }
 
-.date{
-    font-size:28px;
-    opacity:0.75;
-    margin-top:12px;
-    text-transform:capitalize;
-}
-
-@keyframes glow{
+@keyframes clockGlow{
 
     0%{
-        text-shadow:0 0 10px rgba(255,255,255,0.2);
+        opacity:1;
     }
 
     50%{
-        text-shadow:0 0 30px rgba(255,255,255,0.7);
+        opacity:0.92;
     }
 
     100%{
-        text-shadow:0 0 10px rgba(255,255,255,0.2);
+        opacity:1;
     }
 
+}
+
+.date{
+    font-size:24px;
+    opacity:0.55;
+    margin-top:12px;
+    text-transform:capitalize;
+    letter-spacing:2px;
 }
 
 /* CLIMA */
@@ -125,19 +140,20 @@ body{
 }
 
 .icon{
-    font-size:180px;
-    margin-bottom:25px;
-    animation:float 4s ease-in-out infinite;
+    font-size:200px;
+    margin-bottom:20px;
+    animation:weatherFloat 4s ease-in-out infinite;
+    filter:drop-shadow(0 0 18px rgba(255,255,255,0.15));
 }
 
-@keyframes float{
+@keyframes weatherFloat{
 
     0%{
         transform:translateY(0px);
     }
 
     50%{
-        transform:translateY(-15px);
+        transform:translateY(-12px);
     }
 
     100%{
@@ -147,80 +163,86 @@ body{
 }
 
 .temp{
-    font-size:200px;
-    font-weight:bold;
+    font-size:240px;
+    font-weight:900;
     line-height:1;
-    animation:fadeTemp 3s ease-in-out infinite;
+    text-shadow:
+    0 0 25px rgba(255,255,255,0.15);
+    animation:tempPulse 4s ease-in-out infinite;
 }
 
-@keyframes fadeTemp{
+@keyframes tempPulse{
 
     0%{
-        opacity:1;
+        transform:scale(1);
     }
 
     50%{
-        opacity:0.85;
+        transform:scale(1.02);
     }
 
     100%{
-        opacity:1;
+        transform:scale(1);
     }
 
 }
 
 .city{
-    font-size:48px;
-    margin-top:18px;
+    font-size:52px;
+    margin-top:10px;
     font-weight:bold;
+    letter-spacing:4px;
 }
 
 .condition{
-    font-size:38px;
-    opacity:0.9;
-    margin-top:14px;
+    font-size:34px;
+    opacity:0.85;
+    margin-top:12px;
+    font-weight:bold;
 }
 
 /* RODAPÉ */
 
 .footer{
     text-align:center;
-    margin-bottom:30px;
+    width:100%;
+    margin-bottom:20px;
 }
 
 .minmax{
-    font-size:32px;
-    margin-bottom:14px;
-    opacity:0.9;
+    font-size:28px;
+    opacity:0.75;
+    margin-bottom:18px;
+    letter-spacing:2px;
 }
 
 .brand{
-    font-size:14px;
-    opacity:0.35;
-    letter-spacing:2px;
+    font-size:12px;
+    opacity:0.2;
+    letter-spacing:5px;
 }
 
 .red-line{
     width:100%;
-    height:10px;
+    height:12px;
     background:#ff1a1a;
     border-radius:999px;
-    margin-top:18px;
+    margin-top:16px;
     animation:redGlow 2s linear infinite;
 }
 
 @keyframes redGlow{
 
     0%{
-        box-shadow:0 0 5px #ff1a1a;
+        box-shadow:0 0 8px #ff1a1a;
     }
 
     50%{
-        box-shadow:0 0 25px #ff1a1a;
+        box-shadow:0 0 30px #ff1a1a;
     }
 
     100%{
-        box-shadow:0 0 5px #ff1a1a;
+        box-shadow:0 0 8px #ff1a1a;
     }
 
 }
@@ -230,30 +252,28 @@ body{
 
 <body>
 
-<div class="container fade-in">
+<div class="background-glow"></div>
 
-    <!-- TOPO -->
+<div class="container">
 
-    <div>
+    <!-- LOGO -->
 
-        <div class="logo-area">
+    <div class="logo-area">
 
-            <img src="Logo.png" class="logo-img">
+        <img src="Logo.png" class="logo-img">
 
+    </div>
+
+    <!-- RELÓGIO -->
+
+    <div class="clock">
+
+        <div class="time" id="time">
+            00:00
         </div>
 
-        <!-- RELÓGIO -->
-
-        <div class="clock">
-
-            <div class="time" id="time">
-                00:00
-            </div>
-
-            <div class="date" id="date">
-                Carregando...
-            </div>
-
+        <div class="date" id="date">
+            Carregando...
         </div>
 
     </div>
@@ -271,7 +291,7 @@ body{
         </div>
 
         <div class="city">
-            Ouro Preto
+            OURO PRETO
         </div>
 
         <div class="condition" id="condition">
@@ -285,7 +305,7 @@ body{
     <div class="footer">
 
         <div class="minmax" id="minmax">
-            Mín --° | Máx --°
+            MÍN --° • MÁX --°
         </div>
 
         <div class="brand">
@@ -354,33 +374,31 @@ async function getWeather(){
 
         let icon = "☀️";
 
-        let condition = "Ensolarado";
-
-        // CÓDIGOS CLIMA
+        let condition = "ENSOLARADO";
 
         if([1,2].includes(weatherCode)){
             icon = "🌤️";
-            condition = "Parcialmente nublado";
+            condition = "PARCIALMENTE NUBLADO";
         }
 
         if([3].includes(weatherCode)){
             icon = "☁️";
-            condition = "Nublado";
+            condition = "NUBLADO";
         }
 
         if([45,48].includes(weatherCode)){
             icon = "🌫️";
-            condition = "Neblina";
+            condition = "NEBLINA";
         }
 
         if([51,53,55,61,63,65,80,81,82].includes(weatherCode)){
             icon = "🌧️";
-            condition = "Chuva";
+            condition = "CHUVA";
         }
 
         if([95,96,99].includes(weatherCode)){
             icon = "⛈️";
-            condition = "Tempestade";
+            condition = "TEMPESTADE";
         }
 
         document.getElementById('temp').innerText =
@@ -393,14 +411,14 @@ async function getWeather(){
         icon;
 
         document.getElementById('minmax').innerText =
-        "Mín " + min + "° | Máx " + max + "°";
+        "MÍN " + min + "° • MÁX " + max + "°";
 
     }catch(error){
 
         console.log(error);
 
         document.getElementById('condition').innerText =
-        "Sem conexão";
+        "SEM CONEXÃO";
 
     }
 
