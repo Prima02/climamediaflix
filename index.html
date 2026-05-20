@@ -366,11 +366,6 @@ async function getNews(){
         const data = await response.json();
 
         if(!data.items || data.items.length === 0){
-
-            document.getElementById("news")
-            .innerText =
-            "Sem notícias disponíveis";
-
             return;
         }
 
