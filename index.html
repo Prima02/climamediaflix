@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=768,height=1152,initial-scale=1.0"/>
+<title>MediaFlix Clima</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    width:768px;
+    height:1152px;
+    overflow:hidden;
+    background:#000000;
+    color:white;
+}
+
+.container{
+    width:100%;
+    height:100%;
+    padding:50px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+/* LOGO */
+.logo-area{
+    text-align:center;
+    margin-top:10px;
+}
+
+.logo-img{
+    width:620px;
+    height:auto;
+    object-fit:contain;
+}
+
+/* RELÓGIO */
+.clock{
+    text-align:center;
+    margin-top:40px;
+}
+
+.time{
+    font-size:130px;
+    font-weight:bold;
+    line-height:1;
+}
+
+.date{
+    font-size:36px;
+    opacity:0.85;
+    margin-top:16px;
+    text-transform:capitalize;
+}
+
+/* CLIMA */
+.weather{
+    text-align:center;
+}
+
+.icon{
+    font-size:180px;
+    margin-bottom:25px;
+}
+
+.temp{
+    font-size:200px;
+    font-weight:bold;
+    line-height:1;
+}
+
+.city{
+    font-size:48px;
+    margin-top:18px;
+    font-weight:bold;
+}
+
+.condition{
+    font-size:38px;
+    opacity:0.9;
+    margin-top:14px;
+}
+
+/* RODAPÉ */
+.footer{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.minmax{
+    font-size:42px;
+    margin-bottom:25px;
+}
+
+.brand{
+    font-size:28px;
+    opacity:0.7;
+    letter-spacing:3px;
+}
+
+.red-line{
+    width:100%;
+    height:10px;
+    background:#ff1a1a;
+    border-radius:999px;
+    margin-top:25px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- TOPO -->
+    <div>
+
+        <div class="logo-area">
+
+            <img src="Logo.png" class="logo-img">
+
+        </div>
+
+        <!-- RELÓGIO -->
+        <div class="clock">
+
+            <div class="time" id="time">
+                00:00
+            </div>
+
+            <div class="date" id="date">
+                Carregando...
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- CLIMA -->
+    <div class="weather">
+
+        <div class="icon" id="icon">
+            ☀️
+        </div>
+
+        <div class="temp" id="temp">
+            --°
+        </div>
+
+        <div class="city">
+            Ouro Preto
+        </div>
+
+        <div class="condition" id="condition">
+            Carregando clima...
+        </div>
+
+    </div>
+
+    <!-- RODAPÉ -->
+    <div class="footer">
+
+        <div class="minmax" id="minmax">
+            Mín --° | Máx --°
+        </div>
+
+        <div class="brand">
+            MEDIAFLIX WEATHER
+        </div>
+
+        <div class="red-line"></div>
+
+    </div>
+
+</div>
+
+<script>
+
+// RELÓGIO
+function updateClock(){
+
+    const now = new Date();
+
+    const time = now.toLocaleTimeString('pt-BR',{
+        hour:'2-digit',
+        minute:'2-digit'
+    });
+
+    const date = now.toLocaleDateString('pt-BR',{
+        weekday:'long',
+        day:'2-digit',
+        month:'long'
+    });
+
+    document.getElementById('time').innerText = time;
+    document.getElementById('date').innerText = date;
+
+}
+
+setInterval(updateClock,1000);
+updateClock();
+
+
+// CLIMA
+async function getWeather(){
+
+    try{
+
+        const url =
+        "https://api.open-meteo.com/v1/forecast?latitude=-20.3856&longitude=-43.5036&current_weather=true&daily=temperature_2m_max,temperature_2m_min&timezone=America/Sao_Paulo";
+
+        const response = await fetch(url);
+
+        const data = await response.json();
+
+        const temp =
+        Math.round(data.current_weather.temperature);
+
+        const weatherCode =
+        data.current_weather.weathercode;
+
+        const max =
+        Math.round(data.daily.temperature_2m_max[0]);
+
+        const min =
+        Math.round(data.daily.temperature_2m_min[0]);
+
+        let icon = "☀️";
+        let condition = "Ensolarado";
+
+        // CÓDIGOS CLIMA
+        if([1,2].includes(weatherCode)){
+            icon = "🌤️";
+            condition = "Parcialmente nublado";
+        }
+
+        if([3].includes(weatherCode)){
+            icon = "☁️";
+            condition = "Nublado";
+        }
+
+        if([45,48].includes(weatherCode)){
+            icon = "🌫️";
+            condition = "Neblina";
+        }
+
+        if([51,53,55,61,63,65,80,81,82].includes(weatherCode)){
+            icon = "🌧️";
+            condition = "Chuva";
+        }
+
+        if([95,96,99].includes(weatherCode)){
+            icon = "⛈️";
+            condition = "Tempestade";
+        }
+
+        document.getElementById('temp').innerText =
+        temp + "°";
+
+        document.getElementById('condition').innerText =
+        condition;
+
+        document.getElementById('icon').innerText =
+        icon;
+
+        document.getElementById('minmax').innerText =
+        "Mín " + min + "° | Máx " + max + "°";
+
+    }catch(error){
+
+        document.getElementById('condition').innerText =
+        "Sem conexão";
+
+    }
+
+}
+
+getWeather();
+
+// Atualiza a cada 10 minutos
+setInterval(getWeather,600000);
+
+</script>
+
+</body>
+</html>
